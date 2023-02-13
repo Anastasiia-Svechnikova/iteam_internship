@@ -1,77 +1,55 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { BehaviorSubject, interval, map, Observable, startWith, Subscription, tap } from 'rxjs';
+import { BehaviorSubject, interval, map, Subscription } from 'rxjs';
 import { transformTime } from '../helpers/timeTransformHelper';
+import { StopWatchService } from './stopwatch.service';
+import { TimeData } from './timeData.model';
 
 @Component({
   selector: 'app-stopwatch',
   templateUrl: './stopwatch.component.html',
-  styleUrls: ['./stopwatch.component.scss']
+  styleUrls: ['./stopwatch.component.scss'],
 })
-export class StopwatchComponent  implements OnInit, OnDestroy {
-  hours: number = 0
-  minutes: number = 0
-  seconds = 0
+export class StopwatchComponent implements OnInit, OnDestroy {
+
+  timeData!: TimeData
   activeMode = false;
-  waitingMode = false;
-  subscriptionStart!: Subscription
-  subscriptionResume!: Subscription
-  stopWatch$ = new BehaviorSubject(0)
-  stopWatchSubscription = new Subscription()
-  interval$ = interval(1000)
-  previous = 0;
-  
-  
-  
-  ngOnInit(): void {
-    this.stopWatchSubscription = this.stopWatch$.subscribe((val ) => {
-      this.hours = transformTime(val).hours
-      this.minutes = transformTime(val).minutes
-      this.seconds = transformTime(val).seconds
-    })
-   
+  stopWatchSubscription = new Subscription();
+
+  constructor(private stopWatchService: StopWatchService) {
+    
   }
 
-  onStart() {
-    if (!this.activeMode) {
-      this.subscriptionStart = this.interval$.subscribe(this.stopWatch$)
-      this.activeMode = true;
+  ngOnInit(): void {
+    this.timeData = this.stopWatchService.timeData
 
+    this.stopWatchSubscription = this.stopWatchService.stopWatch$.subscribe((value: number) => {
+      const {hours, minutes, seconds} = transformTime(value)
+      this.timeData.setValues(hours, minutes, seconds)
+    });
+  }
+
+  onToggleStartStop() {
+    if (!this.activeMode) {
+      this.stopWatchService.startStopWatch()
+      this.activeMode = true;
     } else {
-      
       this.activeMode = false;
-      this.waitingMode = false;
-      this.subscriptionStart.unsubscribe()   
+      this.stopWatchService.stopStopWatch()
     }
   }
 
-
   onReset() {
-    this.previous = 0
-    this.activeMode = false;
-    this.waitingMode = false;
-    this.subscriptionStart.unsubscribe()
-    this.hours = 0;
-    this.minutes = 0;
-    this.seconds = 0;
+    setTimeout(() => (this.activeMode = true), 1000);
+    this.stopWatchService.stopStopWatch()
+    this.stopWatchService.startStopWatch()
   }
 
   onWait() {
-    if (!this.waitingMode) {
-      
-      this.previous = this.stopWatch$.value;
-      console.log(this.previous)
-      this.subscriptionStart.unsubscribe()
-      this.waitingMode = true;
-    } else {
-       this.waitingMode = false;
-      this.subscriptionStart = this.interval$.pipe(map((val)=>val + this.previous)).subscribe(this.stopWatch$)
-      console.log(this.subscriptionStart)
-    }
+    this.activeMode = false;
+    this.stopWatchService.waitStopWatch()
   }
-
 
   ngOnDestroy(): void {
-    this.stopWatchSubscription.unsubscribe()
+    this.stopWatchSubscription.unsubscribe();
   }
-
 }
