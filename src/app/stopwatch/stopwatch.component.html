@@ -4,8 +4,8 @@
         <p class="text">{{hours | padStart: '0': 2}} : {{minutes | padStart: '0': 2}} : {{seconds | padStart: '0': 2}}</p>   
     </div>
     <div class="controls">
-        <button type="button" (click)="onStart()" color="accent" mat-raised-button>{{!activeMode ? 'Start': 'Stop'}}</button>
-        <button type="button" [disabled]="!activeMode" mat-raised-button color="primary">Wait</button>
-        <button type="button" (click)="onReset()" [disabled]="!activeMode" mat-raised-button color="warn">Reset</button>
+        <button type="button" (click)="onStart()"  color="accent" mat-raised-button>{{!activeMode ? 'Start': 'Stop'}}</button>
+        <button type="button" (click)="onWait()" [disabled]="!activeMode" mat-raised-button color="primary">{{!waitingMode ? 'Wait': 'Resume'}}</button>
+        <button type="button" (click)="onReset()" [disabled]="!hours && !minutes && !seconds" mat-raised-button color="warn">Reset</button>
     </div>
 </section>
