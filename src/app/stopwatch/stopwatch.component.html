@@ -1,6 +1,6 @@
 
 <section class="section">
-    <div class="display">
+    <div class="display" [ngClass]="{display: true, activeShadow: activeMode, inactiveShadow: !activeMode}">
         <p class="text">{{hours | padStart: '0': 2}} : {{minutes | padStart: '0': 2}} : {{seconds | padStart: '0': 2}}</p>   
     </div>
     <div class="controls">

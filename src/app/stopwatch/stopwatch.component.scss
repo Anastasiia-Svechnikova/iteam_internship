@@ -17,7 +17,13 @@
 
     color: rgba(255, 255, 255, 0.838);
     border-radius: 20px;    
+    transition: all 400ms ease-in-out;
+}
+.inactiveShadow{
     box-shadow: 0 0 18px 3px rgba(177, 84, 243, 0.564), inset 0 0 18px 3px rgba(91, 88, 88, 0.564);
+}
+.activeShadow {
+    box-shadow: 0 0 18px 3px rgba(76, 253, 235, 0.564), inset 0 0 18px 3px rgba(91, 88, 88, 0.564);
 }
 .text{
     margin: 0;
@@ -26,7 +32,5 @@
 
 .controls{
     @extend %wrapper;
-
     gap: 10px;
-
 }
