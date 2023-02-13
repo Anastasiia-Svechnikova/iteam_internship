@@ -1,11 +1,11 @@
 
 <section class="section">
     <div class="display">
-        <p class="text">{{time | date:"MM/dd/yy"}}</p>   
+        <p class="text">{{hours | padStart: '0': 2}} : {{minutes | padStart: '0': 2}} : {{seconds | padStart: '0': 2}}</p>   
     </div>
     <div class="controls">
-        <button mat-raised-button>Start/Stop</button>
-        <button mat-raised-button color="primary">Wait</button>
-        <button mat-raised-button color="accent">Reset</button>
+        <button type="button" (click)="onStart()" color="accent" mat-raised-button>{{!activeMode ? 'Start': 'Stop'}}</button>
+        <button type="button" [disabled]="!activeMode" mat-raised-button color="primary">Wait</button>
+        <button type="button" (click)="onReset()" [disabled]="!activeMode" mat-raised-button color="warn">Reset</button>
     </div>
 </section>

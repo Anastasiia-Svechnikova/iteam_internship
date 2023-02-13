@@ -6,11 +6,13 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
  import {MatButtonModule} from '@angular/material/button';
 import { StopwatchComponent } from './stopwatch/stopwatch.component'; 
+import { PadStartPipe } from './stopwatch/padStart.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
-    StopwatchComponent
+    StopwatchComponent,
+    PadStartPipe,
   ],
   imports: [
     BrowserModule,
