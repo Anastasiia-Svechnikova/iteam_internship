@@ -32,6 +32,7 @@ export class StopWatchService {
   waitStopWatch() {
     this.pausedTime = this.stopWatch$.value + 1;
     this.startSubscription.unsubscribe()
+    
   }
 
 }

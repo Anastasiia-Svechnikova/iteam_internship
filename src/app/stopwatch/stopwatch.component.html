@@ -3,7 +3,7 @@
     <div class="display" [ngClass]="{display: true, activeShadow: activeMode, inactiveShadow: !activeMode}">
         <p class="text">{{ timeData.hours | padStart: '0': 2}} : {{timeData.minutes | padStart: '0': 2}} : {{timeData.seconds | padStart: '0': 2}}</p>   
     </div>
-    <div class="controls">
+    <div class="controls" style="color: azure;">
         <button type="button"
         (click)="onToggleStartStop()" 
         color="accent"
@@ -16,5 +16,6 @@
         (click)="onReset()"
         [disabled]="!timeData.hours && !timeData.minutes && !timeData.seconds" 
         mat-raised-button color="warn">Reset</button>
+
     </div>
 </section>

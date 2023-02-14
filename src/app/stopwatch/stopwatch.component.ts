@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { BehaviorSubject, interval, map, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { transformTime } from '../helpers/timeTransformHelper';
 import { StopWatchService } from './stopwatch.service';
 import { TimeData } from './timeData.model';
