@@ -8,14 +8,17 @@ const TIMER_INTERVAL = 1000
   providedIn: 'root'
 })
 export class StopWatchService {
-  public timeData = new TimeData(0, 0, 0)
-  public pausedTime = 1;
-  public stopWatch$ = new BehaviorSubject(0)
-  public startSubscription= new Subscription()
+  timeData = new TimeData(0, 0, 0)
+  pausedTime = 1;
+  stopWatch$ = new BehaviorSubject(0)
+  startSubscription = new Subscription()
+  activeMode = false
+  
 
   constructor() { }
 
   startStopWatch() {
+      this.activeMode = true;
     this.startSubscription = interval(TIMER_INTERVAL)
     .pipe(map((value)=> value +this.pausedTime))
       .subscribe((val) => {
@@ -24,6 +27,7 @@ export class StopWatchService {
   }
 
   stopStopWatch() {
+          this.activeMode = false;
     this.pausedTime = 1;
     this.timeData.reset()
     this.startSubscription.unsubscribe()

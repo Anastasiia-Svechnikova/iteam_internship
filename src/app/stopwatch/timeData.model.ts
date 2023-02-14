@@ -6,7 +6,7 @@ export class TimeData{
         this.minutes = minutes;
         this.seconds = seconds
     }
-    
+
     reset() {
         this.hours = 0;
         this.minutes = 0;

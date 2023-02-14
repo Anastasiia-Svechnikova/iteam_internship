@@ -1,21 +1,20 @@
 
-<section class="section">
-    <div class="display" [ngClass]="{display: true, activeShadow: activeMode, inactiveShadow: !activeMode}">
-        <p class="text">{{ timeData.hours | padStart: '0': 2}} : {{timeData.minutes | padStart: '0': 2}} : {{timeData.seconds | padStart: '0': 2}}</p>   
-    </div>
-    <div class="controls" style="color: azure;">
-        <button type="button"
-        (click)="onToggleStartStop()" 
-        color="accent"
-         mat-raised-button>{{!activeMode ? 'Start': 'Stop'}}</button>
-        <button type="button" 
-        (click)="onWait()" 
-        [disabled]="!activeMode" 
-        mat-raised-button color="primary">Wait</button>
-        <button type="button"
-        (click)="onReset()"
-        [disabled]="!timeData.hours && !timeData.minutes && !timeData.seconds" 
-        mat-raised-button color="warn">Reset</button>
-
-    </div>
-</section>
+<mat-card-content>
+    <mat-card  class="display" >
+        <p class="text">{{ timeData.hours |number :'2.0'}} : {{timeData.minutes |number :'2.0' }} : {{timeData.seconds |number :'2.0' }}</p>   
+        <mat-card-actions  class="controls" >
+            <button type="button"
+            (click)="onToggleStartStop()" 
+            color="accent"
+            mat-raised-button>{{!activeMode ? 'Start': 'Stop'}}</button>
+            <button type="button" 
+            (click)="onWait()" 
+            [disabled]="!activeMode" 
+            mat-raised-button color="primary">Wait</button>
+            <button type="button"
+            (click)="onReset()"
+            [disabled]="!timeData.hours && !timeData.minutes && !timeData.seconds" 
+            mat-raised-button color="warn">Reset</button>           
+        </mat-card-actions>
+    </mat-card>
+</mat-card-content>

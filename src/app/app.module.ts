@@ -4,21 +4,22 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
- import {MatButtonModule} from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
+  import {MatCardModule} from '@angular/material/card'; 
 import { StopwatchComponent } from './stopwatch/stopwatch.component'; 
-import { PadStartPipe } from './stopwatch/padStart.pipe';
+
 
 @NgModule({
   declarations: [
     AppComponent,
-    StopwatchComponent,
-    PadStartPipe,
+    StopwatchComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MatButtonModule
+    MatButtonModule,
+    MatCardModule
   ],
   providers: [],
   bootstrap: [AppComponent]
