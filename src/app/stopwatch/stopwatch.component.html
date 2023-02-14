@@ -1,20 +1,27 @@
-
 <mat-card-content>
-    <mat-card  class="display" >
-        <p class="text">{{ timeData.hours |number :'2.0'}} : {{timeData.minutes |number :'2.0' }} : {{timeData.seconds |number :'2.0' }}</p>   
-        <mat-card-actions  class="controls" >
-            <button type="button"
-            (click)="onToggleStartStop()" 
-            color="accent"
-            mat-raised-button>{{!activeMode ? 'Start': 'Stop'}}</button>
-            <button type="button" 
-            (click)="onWait()" 
-            [disabled]="!activeMode" 
-            mat-raised-button color="primary">Wait</button>
-            <button type="button"
-            (click)="onReset()"
-            [disabled]="!timeData.hours && !timeData.minutes && !timeData.seconds" 
-            mat-raised-button color="warn">Reset</button>           
-        </mat-card-actions>
-    </mat-card>
+  <mat-card class="display">
+    <p class="text">{{ timeData }}</p>
+    <mat-card-actions class="controls">
+      <button type="button"
+        (click)="onToggleStartStop()"
+        color="accent"
+        mat-raised-button
+      >
+        {{ !stopWatchService.activeMode ? "Start" : "Stop" }}
+      </button>
+      <button type="button"
+        (click)="onWait()"
+        [disabled]="!stopWatchService.activeMode"
+        mat-raised-button
+        color="primary"
+      >
+        Wait
+      </button>
+      <button type="button" 
+      (click)="onReset()" 
+      mat-raised-button color="warn">
+        Reset
+      </button>
+    </mat-card-actions>
+  </mat-card>
 </mat-card-content>

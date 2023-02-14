@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, map } from 'rxjs';
+
 import { transformTime } from '../helpers/timeTransformHelper';
 import { StopWatchService } from './stopwatch.service';
-import { TimeData } from './timeData.model';
 
 @Component({
   selector: 'app-stopwatch',
@@ -10,50 +10,46 @@ import { TimeData } from './timeData.model';
   styleUrls: ['./stopwatch.component.scss'],
 })
 export class StopwatchComponent implements OnInit, OnDestroy {
-
-  timeData!: TimeData
-  activeMode = false;
+  /** string with time value from the stopWatch observable in format HH : MM : SS */
+  timeData = '';
   stopWatchSubscription = new Subscription();
-  doubleClickCheck = 0;
+  /** time of the first click on Wait btn in DoubleClick sequence, in ms */
+  firstClickTime = 0;
 
-  constructor(private stopWatchService: StopWatchService) {}
+  constructor(public stopWatchService: StopWatchService) {}
 
   ngOnInit(): void {
-    this.timeData = this.stopWatchService.timeData
-
-    this.stopWatchSubscription = this.stopWatchService.stopWatch$.subscribe((value: number) => {
-      const {hours, minutes, seconds} = transformTime(value)
-      this.timeData.setValues(hours, minutes, seconds)
-    });
-  }
-
-  onToggleStartStop() {
-    if (!this.activeMode) {
-      this.activeMode = true;
-      this.stopWatchService.startStopWatch()
-    } else {
-      this.activeMode = false;
-      this.stopWatchService.stopStopWatch()
-    }
-  }
-
-  onReset() {
-    this.activeMode = false
-    setTimeout(() => (this.activeMode = true), 1000);
-    this.stopWatchService.stopStopWatch()
-    this.stopWatchService.startStopWatch()
-  }
-  
-  onWait() {
-    if (this.doubleClickCheck < (Date.now()- 300)) {
-      this.doubleClickCheck = Date.now()    
-    } else {     
-      this.activeMode = false;
-      this.stopWatchService.waitStopWatch()
-    }   
+    this.stopWatchSubscription = this.stopWatchService.stopWatch$
+      // change the incoming number value from the interval observable to format HH : MM : SS
+      .pipe(map((value) => transformTime(value)))
+      // save the time value to the timeData variable which is used in the template
+      .subscribe((time) => (this.timeData = time));
   }
 
   ngOnDestroy(): void {
     this.stopWatchSubscription.unsubscribe();
+  }
+
+  onToggleStartStop():void {
+    // this.stopWatchService.activeMode shows if the start button has already been clicked before
+    if (!this.stopWatchService.activeMode) {
+      this.stopWatchService.startStopWatch();
+    } else {
+      this.stopWatchService.stopStopWatch();
+    }
+  }
+
+  onReset():void {
+    this.stopWatchService.stopStopWatch();
+    this.stopWatchService.startStopWatch();
+  }
+
+  onWait():void {
+    // check if the first click on wait button was more than 300ms ago
+    if (this.firstClickTime < Date.now() - 300) {
+      this.firstClickTime = Date.now();
+    } else {
+      this.stopWatchService.waitStopWatch();
+    }
   }
 }
