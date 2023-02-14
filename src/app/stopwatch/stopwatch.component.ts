@@ -14,6 +14,7 @@ export class StopwatchComponent implements OnInit, OnDestroy {
   timeData!: TimeData
   activeMode = false;
   stopWatchSubscription = new Subscription();
+  doubleClickCheck = 0;
 
   constructor(private stopWatchService: StopWatchService) {}
 
@@ -42,10 +43,14 @@ export class StopwatchComponent implements OnInit, OnDestroy {
     this.stopWatchService.stopStopWatch()
     this.stopWatchService.startStopWatch()
   }
-
+  
   onWait() {
-    this.activeMode = false;
-    this.stopWatchService.waitStopWatch()
+    if (this.doubleClickCheck < (Date.now()- 300)) {
+      this.doubleClickCheck = Date.now()    
+    } else {     
+      this.activeMode = false;
+      this.stopWatchService.waitStopWatch()
+    }   
   }
 
   ngOnDestroy(): void {
