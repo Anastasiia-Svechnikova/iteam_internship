@@ -15,9 +15,7 @@ export class StopwatchComponent implements OnInit, OnDestroy {
   activeMode = false;
   stopWatchSubscription = new Subscription();
 
-  constructor(private stopWatchService: StopWatchService) {
-    
-  }
+  constructor(private stopWatchService: StopWatchService) {}
 
   ngOnInit(): void {
     this.timeData = this.stopWatchService.timeData
@@ -30,8 +28,8 @@ export class StopwatchComponent implements OnInit, OnDestroy {
 
   onToggleStartStop() {
     if (!this.activeMode) {
-      this.stopWatchService.startStopWatch()
       this.activeMode = true;
+      this.stopWatchService.startStopWatch()
     } else {
       this.activeMode = false;
       this.stopWatchService.stopStopWatch()
@@ -39,6 +37,7 @@ export class StopwatchComponent implements OnInit, OnDestroy {
   }
 
   onReset() {
+    this.activeMode = false
     setTimeout(() => (this.activeMode = true), 1000);
     this.stopWatchService.stopStopWatch()
     this.stopWatchService.startStopWatch()
