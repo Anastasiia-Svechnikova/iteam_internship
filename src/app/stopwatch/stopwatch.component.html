@@ -1,25 +1,26 @@
-<mat-card-content>
+<mat-card-content #app>
   <mat-card class="display">
     <p class="text">{{ timeData }}</p>
     <mat-card-actions class="controls">
-      <button type="button"
+      <button
+        type="button"
         (click)="onToggleStartStop()"
         color="accent"
         mat-raised-button
       >
         {{ !stopWatchService.activeMode ? "Start" : "Stop" }}
       </button>
-      <button type="button"
-        (click)="onWait()"
+      <button
+        type="button"
+        (click)="onWaitObservable()"
         [disabled]="!stopWatchService.activeMode"
         mat-raised-button
         color="primary"
+        #waitBtn
       >
         Wait
       </button>
-      <button type="button" 
-      (click)="onReset()" 
-      mat-raised-button color="warn">
+      <button type="button" (click)="onReset()" mat-raised-button color="warn">
         Reset
       </button>
     </mat-card-actions>

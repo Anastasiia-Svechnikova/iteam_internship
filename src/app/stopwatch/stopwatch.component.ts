@@ -1,5 +1,20 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription, map } from 'rxjs';
+import {
+  AfterContentInit,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { MatButton } from '@angular/material/button';
+import {
+  Subscription,
+  map,
+  debounceTime,
+  filter,
+  buffer,
+  fromEvent,
+  take,
+} from 'rxjs';
 
 import { transformTime } from '../helpers/timeTransformHelper';
 import { StopWatchService } from './stopwatch.service';
@@ -10,11 +25,12 @@ import { StopWatchService } from './stopwatch.service';
   styleUrls: ['./stopwatch.component.scss'],
 })
 export class StopwatchComponent implements OnInit, OnDestroy {
+  @ViewChild('waitBtn', { static: true }) btn!: MatButton;
+
   /** string with time value from the stopWatch observable in format HH : MM : SS */
   timeData = '';
-  stopWatchSubscription = new Subscription();
-  /** time of the first click on Wait btn in DoubleClick sequence, in ms */
-  firstClickTime = 0;
+  private stopWatchSubscription = new Subscription();
+  private doubleClickSubscription = new Subscription();
 
   constructor(public stopWatchService: StopWatchService) {}
 
@@ -28,9 +44,10 @@ export class StopwatchComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.stopWatchSubscription.unsubscribe();
+     this.doubleClickSubscription.unsubscribe();
   }
 
-  onToggleStartStop():void {
+  onToggleStartStop(): void {
     // this.stopWatchService.activeMode shows if the start button has already been clicked before
     if (!this.stopWatchService.activeMode) {
       this.stopWatchService.startStopWatch();
@@ -39,17 +56,23 @@ export class StopwatchComponent implements OnInit, OnDestroy {
     }
   }
 
-  onReset():void {
+  onReset(): void {
     this.stopWatchService.stopStopWatch();
     this.stopWatchService.startStopWatch();
   }
-
-  onWait():void {
-    // check if the first click on wait button was more than 300ms ago
-    if (this.firstClickTime < Date.now() - 300) {
-      this.firstClickTime = Date.now();
-    } else {
-      this.stopWatchService.waitStopWatch();
+  
+  onWaitObservable(): void {
+    const click$ = fromEvent(this.btn._elementRef.nativeElement, 'click');
+    
+    // check if during 300 ms the number of click is > 2
+    this.doubleClickSubscription = click$
+    .pipe(
+      take(2),
+      buffer(click$.pipe(debounceTime(300))),
+      filter((clicks) =>  clicks.length >= 2)
+      )
+      .subscribe((_) => {
+        this.stopWatchService.waitStopWatch();
+      });
     }
-  }
 }
