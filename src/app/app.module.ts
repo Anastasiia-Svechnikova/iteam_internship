@@ -14,7 +14,6 @@ import { StopwatchComponent } from './stopwatch/stopwatch.component';
   declarations: [
     AppComponent,
     StopwatchComponent,
-
   ],
   imports: [
     BrowserModule,
