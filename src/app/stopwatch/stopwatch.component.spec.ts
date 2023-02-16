@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { StopwatchComponent } from './stopwatch.component';
 
-describe('StopwatchComponent', () => {
+describe('Stopwatch24Component', () => {
   let component: StopwatchComponent;
   let fixture: ComponentFixture<StopwatchComponent>;
 

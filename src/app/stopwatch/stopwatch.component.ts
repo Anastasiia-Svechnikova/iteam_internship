@@ -11,7 +11,7 @@ import {
   map,
 } from 'rxjs';
 import { MatButton } from '@angular/material/button';
-import { IStopWatch, StopwatchData } from './stopwatchTypes';
+import { IStopWatch } from './stopwatchTypes';
 
 const TIMER_INTERVAL = 1000;
 
@@ -23,33 +23,23 @@ const TIMER_INTERVAL = 1000;
 export class StopwatchComponent implements OnInit, OnDestroy {
   @ViewChild('waitBtn', { static: true }) btn!: MatButton;
 
-  private doubleClickSubscription = new Subscription();
-
-  /** The initial stopWatch$  properties:
-   * data: an array: [number, number, number] that stores hours, minutes, seconds
-   * current: a numeric value that indicates the current interval value
-   * previous: a numeric value that stores the previous interval value
-   */
+  startSubscription = new Subscription();
   stopWatch$ = new BehaviorSubject<IStopWatch>({
-    data: [0, 0, 0],
     current: 1,
     previous: 1,
+    isActive: false,
   });
-  startSubscription = new Subscription();
 
   constructor() {}
 
-  ngOnInit(): void {
-    this.startSubscription.closed = true;
-  }
+  ngOnInit(): void {}
 
   ngOnDestroy(): void {
     this.startSubscription.unsubscribe();
-    this.doubleClickSubscription.unsubscribe();
   }
 
   onToggleStartStop(): void {
-    if (this.startSubscription.closed) {
+    if (!this.stopWatch$.value.isActive) {
       this.startStopWatch();
     } else {
       this.stopStopWatch();
@@ -64,60 +54,39 @@ export class StopwatchComponent implements OnInit, OnDestroy {
   onWait(): void {
     const click$ = fromEvent(this.btn._elementRef.nativeElement, 'click');
     // check if during 300 ms the number of click is > 2
-    this.doubleClickSubscription = click$
+   click$
       .pipe(
         take(2),
         buffer(click$.pipe(debounceTime(300))),
         filter((clicks) => clicks.length >= 2)
       )
       .subscribe((_) => {
-        // set previous stopwatch$ value to current
-        this.stopWatch$.value.previous = this.stopWatch$.value.current + 1;
+        // set the pausedTime in milliseconds
+        const previous =  this.stopWatch$.value.current / 1000 + 1;
+        this.stopWatch$.next({...this.stopWatch$.value, previous, isActive: false });
         this.startSubscription.unsubscribe();
-        this.startSubscription.closed = true;
       });
   }
 
   startStopWatch(): void {
-    this.startSubscription.closed = false;
+    this.stopWatch$.value.isActive = true;
     this.startSubscription = interval(TIMER_INTERVAL)
       .pipe(
         map((value) => {
-          // add previous stopwatch$ value to current
-          const current = (this.stopWatch$.value.current =
-            value + this.stopWatch$.value.previous);
-          // transform the interval numeric value to StopwatchData type
-          const data = this.transformTime(
-            value + this.stopWatch$.value.previous
-          );
-          const previous = this.stopWatch$.value.previous;
-          return { data, current, previous };
+          // add the previous time, which could be set on clicking Wait or is 1 by default
+          // and multiply by 1000 so that the value passed from the interval
+          // to this.stopwatch$ equals to the number of milliseconds
+          return (value + this.stopWatch$.value.previous) * 1000;
         })
       )
-      .subscribe((value) => {
-        this.stopWatch$.next(value);
+      .subscribe((current) => {
+        this.stopWatch$.next({ ...this.stopWatch$.value, current });
       });
   }
 
   stopStopWatch(): void {
-    // reset the stopwatch value to 0
-    this.stopWatch$.next({
-      ...this.stopWatch$.value,
-      data: [0, 0, 0],
-      previous: 1,
-    });
+    // reset the stopwatch values to default
+    this.stopWatch$.next({current: 1, previous: 1, isActive: false });
     this.startSubscription.unsubscribe();
-    this.startSubscription.closed = true;
-  }
-
-  /** helper method, accepts a numeric value and returns an array of numbers [hours, minutes, seconds]
-   * so that we can easily iterate over it in the template
-   */
-  transformTime(time: number): StopwatchData {
-    const hours = Math.floor(time / 3600);
-    const minutes = Math.floor((time - hours * 3600) / 60);
-    const seconds = time - hours * 3600 - minutes * 60;
-
-    return [hours, minutes, seconds];
   }
 }

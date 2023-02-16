@@ -7,13 +7,14 @@ import { MatCardModule } from '@angular/material/card';
 
 import { AppComponent } from './app.component';
 import { StopwatchComponent } from './stopwatch/stopwatch.component';
-import { Stopwatch24Component } from './stopwatch24/stopwatch24.component'; 
+
+
 
 @NgModule({
   declarations: [
     AppComponent,
     StopwatchComponent,
-    Stopwatch24Component
+
   ],
   imports: [
     BrowserModule,

@@ -1,9 +1,7 @@
 <mat-card-content #app>
   <mat-card class="display">
     <p class="text">
-      <span *ngFor="let item of stopWatch$.value.data; let last = last">
-        {{ item | number : "2.0" }}{{ !last ? " :" : "" }}</span
-      >
+      {{ stopWatch$.value.current| date : "HH : mm : ss" : "UTC " }}
     </p>
     <mat-card-actions class="controls">
       <button
@@ -12,12 +10,12 @@
         color="accent"
         mat-raised-button
       >
-        {{ startSubscription.closed ? "Start" : "Stop" }}
+        {{ !stopWatch$.value.isActive ? "Start" : "Stop" }}
       </button>
       <button
         type="button"
         (click)="onWait()"
-        [disabled]="startSubscription.closed"
+        [disabled]="!stopWatch$.value.isActive"
         mat-raised-button
         color="primary"
         #waitBtn
