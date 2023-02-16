@@ -1,9 +1,7 @@
 <mat-card-content #app>
   <mat-card class="display">
     <p class="text">
-      <span *ngFor="let item of stopWatch$.value.data; let last = last">
-        {{ item | number : "2.0" }}{{ !last ? " :" : "" }}</span
-      >
+      {{ stopWatch$ | async | date : "HH : mm : ss" : "UTC " }}
     </p>
     <mat-card-actions class="controls">
       <button
