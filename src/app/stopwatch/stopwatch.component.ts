@@ -31,7 +31,7 @@ export class StopwatchComponent implements OnDestroy {
     isActive: false,
   });
   /* helper stream to emit when the timer needs to be stopped **/
-  private stopInterval$ = new Subject();
+  private stopInterval$ = new Subject<void>();
 
   ngOnDestroy(): void {
     this.stopSubscriptions();
@@ -91,6 +91,6 @@ export class StopwatchComponent implements OnDestroy {
   /* helper method to stop both timer$ and interval$ streams **/
   private stopSubscriptions(): void {
     this.timer$.complete();
-    this.stopInterval$.next(true);
+    this.stopInterval$.next();
   }
 }
