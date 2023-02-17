@@ -1,0 +1,30 @@
+<mat-card-content #app>
+  <mat-card class="display">
+    <p class="text">
+      {{ timer$.value.current| date : "HH : mm : ss" : "UTC " }}
+    </p>
+    <mat-card-actions class="controls">
+      <button
+        type="button"
+        (click)="onToggleStartStop()"
+        color="accent"
+        mat-raised-button
+      >
+        {{ !timer$.value.isActive ? "Start" : "Stop" }}
+      </button>
+      <button
+        type="button"
+        (click)="onWait()"
+        [disabled]="!timer$.value.isActive"
+        mat-raised-button
+        color="primary"
+        #waitBtn
+      >
+        Wait
+      </button>
+      <button type="button" (click)="onReset()" mat-raised-button color="warn">
+        Reset
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</mat-card-content>
